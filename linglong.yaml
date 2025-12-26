@@ -1,0 +1,52 @@
+version: "1"
+
+package:
+  id: org.deepin.driver.media.intel
+  name: Intel media driver
+  version: 25.0.0.1
+  kind: extension
+  description: |
+    Intel VA-API driver
+  env:
+    LIBVA_DRIVERS_PATH: $ORIGIN:$PREFIX/lib/dri
+
+base: org.deepin.base/25.2.0
+
+#set the source if you need, a simple example of git is as follows.
+sources:
+  - kind: file
+    url: https://pools.uniontech.com/desktop-professional-V25/pool/main/i/intel-vaapi-driver/i965-va-driver_2.4.1%2Bdfsg1-1_amd64.deb
+    digest: 777df05cc80460bdcb802ac94982deeae5bb3916d3453c05893314c4545c79f3
+    name: i965-va-driver.deb
+  - kind: file
+    url: https://pools.uniontech.com/desktop-professional-V25/pool/community/i/intel-media-driver-non-free/intel-media-va-driver-non-free_24.2.2%2Bds1-1_amd64.deb
+    digest: e7efa33ee99bf028fa333f21d13099343d8bac7ad513a66706c39ec9a7f6e0c0
+    name: intel-media-va-driver.deb
+  - kind: file
+    url: https://pools.uniontech.com/desktop-professional-V25/pool/community/i/intel-gmmlib/libigdgmm12_22.8.1%2Bds1-1_amd64.deb
+    digest: ba95f87ef03dac9a37422a2f68dc647d9d430b355fa54d7d57d182b9a1d2bed9
+    name: libigdgmm12.deb
+
+build: |
+  echo 'hello' #some operation to build this project
+
+  mkdir $PREFIX/lib
+
+  # i965-va-driver
+  PACKAGE="/project/linglong/sources/i965-va-driver.deb"
+  rm -rf extracted
+  dpkg-deb -R ${PACKAGE} extracted
+  cp -r -v -t $PREFIX/lib extracted/usr/lib/x86_64-linux-gnu/*
+
+  # intel-media-va-driver
+  PACKAGE="/project/linglong/sources/intel-media-va-driver.deb"
+  rm -rf extracted
+  dpkg-deb -R ${PACKAGE} extracted
+  cp -r -v -t $PREFIX/lib extracted/usr/lib/x86_64-linux-gnu/*
+
+  PACKAGE="/project/linglong/sources/libigdgmm12.deb"
+  rm -rf extracted
+  dpkg-deb -R ${PACKAGE} extracted
+  cp -r -v -t $PREFIX/lib extracted/usr/lib/x86_64-linux-gnu/*
+
+  echo 'done' #some operation to build this project
